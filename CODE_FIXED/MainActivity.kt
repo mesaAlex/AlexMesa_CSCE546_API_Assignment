@@ -8,50 +8,60 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.userprofiles.ui.theme.UserProfilesTheme
-import androidx.compose.ui.graphics.Color
-import coil.imageLoader
 
 class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.fetchQuote()
+        viewModel.fetchJoke()
 
         setContent {
             UserProfilesTheme {
-                val quote by viewModel.quote.observeAsState()
+                val joke by viewModel.joke.observeAsState()
 
                 @OptIn(ExperimentalMaterial3Api::class)
                 Scaffold(
                     topBar = {
-                        TopAppBar(title = { Text("Alex's Mesa Random Quote Generator") })
+                        TopAppBar(title = { Text("Alex's Funny App") })
                     }
                 ) { padding ->
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(padding)
-                            .padding(16.dp)
-                            .padding(),
+                            .padding(padding),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = quote?.q ?: "Loading...",
-                            style = MaterialTheme.typography.titleLarge
-                            .copy(color = Color.Gray)
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp),
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            if (joke != null) {
+                                Text(
+                                    text = joke!!.setup,
+                                    style = MaterialTheme.typography.titleLarge
+                                )
+                                Text(
+                                    text = joke!!.punchline,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                            } else {
+                                Text(
+                                    text = "Loading…",
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
 
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = "- ${quote?.a ?: ""}",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Button(onClick = { viewModel.fetchQuote() }) {
-                            Text("New Quote")
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Button(onClick = { viewModel.fetchJoke() }) {
+                                Text("Tell me another joke")
+                            }
                         }
                     }
                 }

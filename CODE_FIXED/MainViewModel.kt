@@ -1,22 +1,21 @@
 package com.example.userprofiles
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
-    private val _quote = MutableLiveData<Quote>()
-    val quote: LiveData<Quote> = _quote
+    private val _joke = MutableLiveData<Joke>()
+    val joke: LiveData<Joke> = _joke
 
-    fun fetchQuote() {
+    fun fetchJoke() {
         viewModelScope.launch {
             try {
-                val response = RetrofitInstance.api.getRandomQuote()
-                _quote.value = response.first()
+                _joke.value = RetrofitInstance.api.getRandomJoke()
             } catch (e: Exception) {
-                _quote.value = Quote("| ERROR RECEIVING QUOTE |", "Restart Program")
+                _joke.value = Joke(0, "error", "Failed to load joke.", "")
             }
         }
     }
